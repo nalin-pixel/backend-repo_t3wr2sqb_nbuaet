@@ -12,7 +12,7 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
 # Example schemas (replace with your own):
 
@@ -37,6 +37,28 @@ class Product(BaseModel):
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+# Forum app schemas
+
+class Thread(BaseModel):
+    """
+    Forum threads
+    Collection name: "thread"
+    """
+    title: str = Field(..., min_length=3, max_length=160, description="Thread title")
+    author: str = Field(..., min_length=1, max_length=60, description="Display name of author")
+    content: str = Field(..., min_length=1, max_length=5000, description="Opening post content")
+    category: Optional[str] = Field(None, description="Optional category")
+    tags: Optional[List[str]] = Field(default=None, description="Optional list of tags")
+
+class Post(BaseModel):
+    """
+    Forum posts (replies)
+    Collection name: "post"
+    """
+    thread_id: str = Field(..., description="Associated thread ID (ObjectId as string)")
+    author: str = Field(..., min_length=1, max_length=60, description="Display name of author")
+    content: str = Field(..., min_length=1, max_length=5000, description="Post content")
 
 # Add your own schemas here:
 # --------------------------------------------------
